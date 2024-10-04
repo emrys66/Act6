@@ -1,6 +1,6 @@
-[web servers]
+[web_servers]
 server1 ansible_host=192.168.56.135 
 server3 ansible_host=192.168.56.139
 
-[db server]
+[db _server]
 centos ansible_host=192.168.56.137 ansible_user=centos
