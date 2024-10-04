@@ -4,18 +4,18 @@
   pre_tasks:
    
   - name: install updates (CentOS)
-    dnf:
+    yum:
       update_only: yes
       update_cache: yes
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
     
   - name: install updates (Ubuntu)
     apt:
       upgrade: dist
       update_cache: yes
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
 
-- hosts: servers
+- hosts: all
   become: true
   tasks:
   
@@ -25,12 +25,12 @@
         - apache2
         - libapache2-mod-php
       state: latest
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
     
   - name: install apache and php for CentOS servers
-    dnf:
+    yum:
       name:
         - httpd
         - php
       state: latest
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
