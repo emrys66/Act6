@@ -1,15 +1,52 @@
 ---
 - hosts: all
   become: true
-  pre-tasks:
-
-  - name: install apache2amd php packages in Ubuntu and CentOS
-    package:
-      name:
-        - "{{ apache_package }}"
-        - "{{ php_package }}"
+  pre_tasks:
+  - name: install updates (CentOS)
+    dnf:
+      name: '*'
       state: latest
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
+  - name: install updates (Ubuntu)
+    apt:
+      upgrade: dist
       update_cache: yes
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
+- hosts: all
+  become: true
+  tasks:
+  - name: install apache and php for Ubuntu servers
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
+  - name: install apache and php for CentOS servers
+    dnf:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
+- hosts: db_server
+  become: true
+  tasks:
+  - name: install mariadb package (CentOS)
+    dnf:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
+  - name: Mariadb Restarting/Enabling
+    service:
+      name: mariadb
+      state: restarted
+      enabled: true
+  - name: install mariadb package (Ubuntu)
+    apt:
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
 - hosts: fileserver
   become: true
   tasks:
