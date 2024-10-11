@@ -8,14 +8,14 @@
     dnf:
       update_only: yes
       update_cache: yes
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
     
   - name: install updates (Ubuntu)
     tags: always
     apt:
       upgrade: dist
       update_cache: yes
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
 
 - hosts: servers
   become: true
@@ -28,7 +28,7 @@
         - apache2
         - libapache2-mod-php
       state: latest
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
     
   - name: install apache and php for CentOS servers
     tags: apache,centos,httpd
@@ -37,7 +37,7 @@
         - httpd
         - php
       state: latest
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
 
 - hosts: server_centOS
   become: true
@@ -48,7 +48,7 @@
     yum:
       name: mariadb-server
       state: latest
-    when: ansible_distribution == "CentOS"
+    when: ansible_distribution is defined and ansible_distribution == "CentOS"
     
   - name: Mariadb Restarting/Enabling
     service:
@@ -61,7 +61,7 @@
     apt:
       name: mariadb-server
       state: latest
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
 - hosts: file_servers
   become: true
   tasks:
